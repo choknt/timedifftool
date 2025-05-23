@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Time Difference Tool</title>
+
+  <style>
+
+    * {
+
+      box-sizing: border-box;
+
+    }
+
+    body {
+
+      font-family: 'Segoe UI', sans-serif;
+
+      background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+
+      color: #f1f1f1;
+
+      margin: 0;
+
+      padding: 0;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      height: 100vh;
+
+    }
+
+    .container {
+
+      background: #2c2c2c;
+
+      padding: 2rem;
+
+      border-radius: 16px;
+
+      box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+
+      max-width: 420px;
+
+      width: 90%;
+
+      text-align: center;
+
+      animation: fadeIn 0.4s ease;
+
+    }
+
+    @keyframes fadeIn {
+
+      from { opacity: 0; transform: translateY(10px); }
+
+      to { opacity: 1; transform: translateY(0); }
+
+    }
+
+    h1 {
+
+      font-size: 1.5rem;
+
+      color: #00d9ff;
+
+      margin-bottom: 1rem;
+
+    }
+
+    input[type="time"],
+
+    input[type="date"] {
+
+      padding: 0.6rem;
+
+      margin-bottom: 1rem;
+
+      width: 100%;
+
+      font-size: 1rem;
+
+      border-radius: 8px;
+
+      border: none;
+
+      background: #3a3a3a;
+
+      color: white;
+
+    }
+
+    button {
+
+      padding: 10px 20px;
+
+      font-size: 1rem;
+
+      border-radius: 8px;
+
+      border: none;
+
+      background: #00d9ff;
+
+      color: black;
+
+      cursor: pointer;
+
+      margin: 0.5rem 0.25rem;
+
+      transition: 0.3s;
+
+    }
+
+    button:hover {
+
+      background: #00aacc;
+
+    }
+
+    .output {
+
+      font-size: 1.4rem;
+
+      font-weight: bold;
+
+      margin: 1rem 0;
+
+      color: #00ff99;
+
+    }
+
+    .note {
+
+      font-size: 0.8rem;
+
+      color: #aaa;
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Time Until Target</h1>
+
+    <input type="time" id="targetTime" />
+
+    <input type="date" id="targetDate" />
+
+    <button onclick="calculateTime()">Calculate</button>
+
+    <button onclick="copyToClipboard()">Copy Result</button>
+
+    <div class="output" id="result">Set your time & date</div>
+
+    <div class="note">If selected time is in the past, it uses the next day automatically.</div>
+
+  </div>
+
+  <script>
+
+    function calculateTime() {
+
+      const timeVal = document.getElementById("targetTime").value;
+
+      let dateVal = document.getElementById("targetDate").value;
+
+      const result = document.getElementById("result");
+
+      if (!timeVal) {
+
+        result.textContent = "Please enter a valid time.";
+
+        return;
+
+      }
+
+      const now = new Date();
+
+      if (!dateVal) {
+
+        // default to tomorrow
+
+        const tomorrow = new Date();
+
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        dateVal = tomorrow.toISOString().split("T")[0];
+
+      }
+
+      const target = new Date(`${dateVal}T${timeVal}`);
+
+      if (target < now) {
+
+        target.setDate(target.getDate() + 1); // Auto adjust to next day
+
+      }
+
+      const diffMs = target - now;
+
+      const minutes = Math.floor(diffMs / 60000);
+
+      result.textContent = `${minutes} minutes left`;
+
+    }
+
+    function copyToClipboard() {
+
+      const text = document.getElementById("result").textContent;
+
+      navigator.clipboard.writeText(text).then(() => {
+
+        alert("Copied to clipboard!");
+
+      });
+
+    }
+
+    // Set default date to today
+
+    window.addEventListener("DOMContentLoaded", () => {
+
+      const today = new Date().toISOString().split("T")[0];
+
+      document.getElementById("targetDate").value = today;
+
+    });
+
+  </script>
+
+</body>
+
+</html>
